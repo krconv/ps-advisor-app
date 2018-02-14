@@ -44,9 +44,12 @@ public class SurveyNewFamilyFrag extends SurveyQuestionsFrag {
 
                 mSharedSurveyViewModel.makeSnapshot(survey); //assumes family livedata object has value
 
-                mQuestionAdapter.setQuestionsList(mSharedSurveyViewModel.getSurveyInProgress().getPersonalQuestions());
+                mQuestions = mSharedSurveyViewModel.getSurveyInProgress().getPersonalQuestions();
             }
 
+            mSharedSurveyViewModel.getPersonalResponses().observe(this, mSurveyReviewAdapter::setResponses);
+
+            super.initQuestionList();
             checkConditions();
         });
     }
