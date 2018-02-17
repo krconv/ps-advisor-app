@@ -2,11 +2,15 @@ package org.fundacionparaguaya.advisorapp.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
+
+import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
+
 import org.fundacionparaguaya.advisorapp.AdvisorApplication;
 import org.fundacionparaguaya.advisorapp.R;
 import org.fundacionparaguaya.advisorapp.adapters.SurveySummaryAdapter;
@@ -85,7 +89,7 @@ public class SurveySummaryFragment extends AbstractSurveyFragment implements Sur
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_surveysummary, container, false);
 
         backgroundQs = (SurveySummaryComponent) view.findViewById(R.id.surveysummary_background);
@@ -94,7 +98,18 @@ public class SurveySummaryFragment extends AbstractSurveyFragment implements Sur
 
         mSubmitButton.setOnClickListener((event)->
         {
-            mSurveyViewModel.setSurveyState(SharedSurveyViewModel.SurveyState.LIFEMAP);
+            new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText(getString(R.string.survey_summary_confirmation))
+                    .setContentText(getString(R.string.survey_summary_confirmation_details))
+                    .setCancelText(getString(R.string.all_cancel))
+                    .setConfirmText(getString(R.string.survey_summary_submit))
+                    .showCancelButton(true)
+                    .setCancelClickListener(SweetAlertDialog::cancel)
+                    .setConfirmClickListener((dialog)-> {
+                        mSurveyViewModel.setSurveyState(SharedSurveyViewModel.SurveyState.LIFEMAP);
+                        dialog.dismissWithAnimation();
+                    })
+                    .show();
         });
 
         mBackButton.setOnClickListener((event)->
